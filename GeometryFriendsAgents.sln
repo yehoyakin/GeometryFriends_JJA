@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryFriendsAgents", "GeometryFriendsAgents.csproj", "{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}"
+EndProject
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "GeometryFriends", "GeometryFriendsGame\Release\GeometryFriends.exe", "{8BE5A646-5843-4D13-B2C9-39CC1DB80970}"
+	ProjectSection(DebuggerProjectSystem) = preProject
+		PortSupplier = 00000000-0000-0000-0000-000000000000
+		Executable = D:\joaqu\2022-1\IA\Competencia\Codigo\GeometryFriendsGame\Release\GeometryFriends.exe
+		RemoteMachine = DESKTOP-59UKVEJ
+		StartingDirectory = D:\joaqu\2022-1\IA\Competencia\Codigo\GeometryFriendsGame\Release
+		Environment = Predeterminado
+		LaunchingEngine = 00000000-0000-0000-0000-000000000000
+		UseLegacyDebugEngines = No
+		LaunchSQLEngine = No
+		AttachLaunchAction = No
+		IORedirection = Auto
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6F45AB29-7874-4B3D-8073-B2D5F0C1A35F}.Release|x86.ActiveCfg = Release|Any CPU
+		{8BE5A646-5843-4D13-B2C9-39CC1DB80970}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{8BE5A646-5843-4D13-B2C9-39CC1DB80970}.Debug|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8BE5A646-5843-4D13-B2C9-39CC1DB80970}.Debug|x86.ActiveCfg = Release|Any CPU
+		{8BE5A646-5843-4D13-B2C9-39CC1DB80970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BE5A646-5843-4D13-B2C9-39CC1DB80970}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8BE5A646-5843-4D13-B2C9-39CC1DB80970}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E3043FD-0866-45C3-923B-B44A608EA566}
+	EndGlobalSection
+EndGlobal
