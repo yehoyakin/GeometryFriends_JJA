@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GeometryFriendsAgents
 {
-    internal class GameInfo
+    public class GameInfo
     {
         public const int CIRCLE_RADIUS = 40;
 

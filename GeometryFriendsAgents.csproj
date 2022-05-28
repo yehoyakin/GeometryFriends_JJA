@@ -52,6 +52,7 @@
     <Compile Include="PlatformRectangle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RectangleAgent.cs" />
+    <Compile Include="Sub-goalAstar.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

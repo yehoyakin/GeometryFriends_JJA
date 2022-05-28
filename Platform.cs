@@ -99,11 +99,15 @@ namespace GeometryFriendsAgents
 
         public void SetPlatformID()
         {
+            // orden de todas las plataformas
+            // ordena comparando las alturas
+            // si las alturas son iguales ordena comparando las esquinas izquierdas
             platformInfoList.Sort((a, b) => {
                 int result = a.height - b.height;
                 return result != 0 ? result : a.leftEdge - b.leftEdge;
             });
 
+            // luego ordena todas las plataformas asinandoles un id desde 1 hasta la cantidad de plataformas
             Parallel.For(0, platformInfoList.Count, i =>
             {
                 PlatformInfo tempPlatfom = platformInfoList[i];

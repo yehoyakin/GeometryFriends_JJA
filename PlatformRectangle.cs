@@ -66,28 +66,33 @@ namespace GeometryFriendsAgents
 
             Parallel.For(0, levelArray.GetLength(0), i =>
             {
+                // platform flag sirve para diferenciar entre plataformas con caída y plataformas conectadas a otras
                 bool platformFlag = false, platformWithObstacle = false;
                 int height = 0, leftEdge = 0, rightEdge = 0, obstacle_height = NO_OBSTACLE;
 
-                // platformArray.GetLength(0) -> altura
-                // platformArray.GetLength(1) -> ancho 
+                // platformArray.GetLength(0) -> altura --> i
+                // platformArray.GetLength(1) -> ancho --> j
                 for (int j = 0; j < platformArray.GetLength(1); j++)
                 {
                     if (platformArray[i, j] == LevelArray.OBSTACLE && !platformFlag)
                     {
                         height = LevelArray.ConvertValue_ArrayPointIntoPoint(i);
+                        // la esquina izquierda es donde comienza el array
                         leftEdge = LevelArray.ConvertValue_ArrayPointIntoPoint(j);
                         platformFlag = true;
                     }
 
                     if (platformArray[i, j] == LevelArray.OPEN && platformFlag)
                     {
+                        // la esquina derecha es el final del array menos 1 pixel
                         rightEdge = LevelArray.ConvertValue_ArrayPointIntoPoint(j - 1);
 
                         if (rightEdge >= leftEdge)
                         {
                             lock (platformInfoList)
                             {
+                                // crea la plataforma y la añade a la lista, sabiendo la ubicacion de los bordes izquierda y derecha
+                                // en conjunto con la altura basta para saber las coordenadas en pixeles de las 4 esquinas de cada plataforma 
                                 platformInfoList.Add(new PlatformInfo(0, height, leftEdge, rightEdge, new List<MoveInfo>(), obstacle_height * LevelArray.PIXEL_LENGTH));
                             }
                         }
@@ -97,6 +102,8 @@ namespace GeometryFriendsAgents
                         platformFlag = false;
                     }
 
+                    // si esta contigua a otra plataforma
+                    // comienza a registrar la plataforma adyacente
                     if (platformFlag && i >= 12)
                     {
                         for (int h = 7; h <= 25; h++)
@@ -161,12 +168,14 @@ namespace GeometryFriendsAgents
 
         public override void SetMoveInfoList(int[,] levelArray, int numCollectibles)
         {
-
+            // con el array del nivel se revisan las plataformas para determinar el movmiento necesario en la plataforma
+            // son caída inmediata, si es necesario usar morph (cambiar dimensiones del rectangulo)
+            // o si bien es una escalera o caída
             SetMoveInfoList_StraightFall(levelArray, numCollectibles);
             SetMoveInfoList_Morph(levelArray, numCollectibles);
             SetMoveInfoList_StairOrGap(levelArray, numCollectibles);
 
-            foreach (Platform.PlatformInfo i in platformInfoList)
+            foreach (PlatformInfo i in platformInfoList)
             {
                 int from = i.leftEdge + (i.leftEdge - GameInfo.LEVEL_ORIGINAL) % (LevelArray.PIXEL_LENGTH * 2);
                 int to = i.rightEdge - (i.rightEdge - GameInfo.LEVEL_ORIGINAL) % (LevelArray.PIXEL_LENGTH * 2);
@@ -357,6 +366,7 @@ namespace GeometryFriendsAgents
             {
                 foreach (PlatformInfo toPlatform in platformInfoList)
                 {
+                    // si es la misma plataforma
                     if (fromPlatform.Equals(toPlatform) ||
                         fromPlatform.height < toPlatform.height - 2 * LevelArray.PIXEL_LENGTH ||
                         fromPlatform.height > toPlatform.height + 2 * LevelArray.PIXEL_LENGTH)
@@ -379,10 +389,7 @@ namespace GeometryFriendsAgents
 
                         bool[] collectible_onPath = new bool[numCollectibles];
 
-                        /*
-                         * VAI SER PRECISO TRATAR DOS COLLECTIBLES E OBSTACULOS
-                         */
-
+                        // Tratar los collecionables y los obstaculos
                         AddMoveInfoToList(fromPlatform, new MoveInfo(toPlatform, movePoint, landPoint, 0, true, movementType.STAIR_GAP, collectible_onPath, (fromPlatform.height - toPlatform.height) + Math.Abs(movePoint.x - landPoint.x), false, 50));
 
 
@@ -436,6 +443,7 @@ namespace GeometryFriendsAgents
             {
                 prevCollidePoint = collidePoint;
 
+                // el tipo de colision se cambia en la funcion GetPathInfo
                 GetPathInfo(levelArray, collidePoint, collideVelocityX, collideVelocityY,
                     ref collidePoint, ref collideType, ref collideVelocityX, ref collideVelocityY, ref collectible_onPath, ref pathLength, 25);
 
@@ -453,7 +461,6 @@ namespace GeometryFriendsAgents
 
             if (collideType == collideType.FLOOR)
             {
-
                 PlatformInfo? toPlatform = GetPlatform_onRectangle(collidePoint, 100);
 
                 if (toPlatform.HasValue)

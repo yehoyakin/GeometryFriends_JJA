@@ -6,6 +6,7 @@ using GeometryFriends.AI.Perceptions.Information;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace GeometryFriendsAgents
 {
@@ -14,12 +15,21 @@ namespace GeometryFriendsAgents
     /// </summary>
     public class RectangleAgent : AbstractRectangleAgent
     {
-        // atributos creados para nuestro agente
+        // atributos de Clases para nuestro agente
+        private SubgoalAStar subgoalAstar;
         private LevelArray levelArray;
         private PlatformRectangle platform;
-        private Platform.MoveInfo? nextEdge;
+        private Platform.MoveInfo? nextMove;
         private Platform.PlatformInfo? currentPlatform;
         private Platform.PlatformInfo? previousPlatform;
+
+        // atributos añadidos a nuestro agente
+        private int currentCollectibleNum;
+        private int previousCollectibleNum;
+        private int targetPointX_InAir;
+
+        private bool getCollectibleFlag;
+        private bool differentPlatformFlag;
 
         //agent implementation specificiation
         private bool implementedAgent;
@@ -50,12 +60,13 @@ namespace GeometryFriendsAgents
         public RectangleAgent()
         {
             //Instancias
+            subgoalAstar = new SubgoalAStar();
             levelArray = new LevelArray();
             platform = new PlatformRectangle();
 
             previousPlatform = null;
             currentPlatform = null;
-            nextEdge = null;
+            nextMove = null;
 
             //Change flag if agent is not to be used
             implementedAgent = true;
@@ -158,6 +169,172 @@ namespace GeometryFriendsAgents
         //implements abstract rectangle interface: updates the agent state logic and predictions
         public override void Update(TimeSpan elapsedGameTime)
         {
+            if ((lastMoveTime) <= (DateTime.Now.Second) && (lastMoveTime < 60))
+                //(DateTime.Now - lastMoveTime).TotalMilliseconds >= 20)
+            {
+                IsDifferentPlatform();
+                IsGetCollectible();
+
+                // rectangle on a platform
+                if (currentPlatform.HasValue)
+                {
+                    if (differentPlatformFlag || getCollectibleFlag)
+                    {
+                        differentPlatformFlag = false;
+                        getCollectibleFlag = false;
+
+                        targetPointX_InAir = (currentPlatform.Value.leftEdge + currentPlatform.Value.rightEdge) / 2;
+
+                        Task.Factory.StartNew(SetNextMove);
+                    }
+                    // movimiento asignado al punto del grafo
+                    if (nextMove.HasValue)
+                    {
+                        if (-GameInfo.MAX_VELOCITY_Y <= rectangleInfo.VelocityY && rectangleInfo.VelocityY <= GameInfo.MAX_VELOCITY_Y)
+                        {
+                            #region stairGapAction
+                            if (nextMove.Value.movementType == Platform.movementType.STAIR_GAP)
+                            {
+                                if (nextMove.Value.height < 55 && rectangleInfo.Height > 55)
+                                {
+                                    currentAction = Moves.MORPH_DOWN;
+                                }
+
+                                else if (nextMove.Value.height > 190 && rectangleInfo.Height < 190)
+                                {
+                                    currentAction = Moves.MORPH_UP;
+                                }
+
+                                else
+                                {
+                                    currentAction = nextMove.Value.rightMove ? Moves.MOVE_RIGHT : Moves.MOVE_LEFT;
+                                }
+                            }
+                            #endregion
+
+                            #region ActionByPlatformMoveType
+
+                            else if (nextMove.Value.movementType == Platform.movementType.MORPH_DOWN && rectangleInfo.Height > nextMove.Value.height - LevelArray.PIXEL_LENGTH)
+                            {
+                                currentAction = Moves.MORPH_DOWN;
+                            }
+
+                            else if (nextMove.Value.movementType == Platform.movementType.FALL && nextMove.Value.velocityX == 0 && rectangleInfo.Height > 55)
+                            {
+                                currentAction = Moves.MORPH_DOWN;
+                            }
+
+                            else if (nextMove.Value.movementType == Platform.movementType.MORPH_DOWN && rectangleInfo.Height <= nextMove.Value.height - LevelArray.PIXEL_LENGTH)
+                            {
+                                currentAction = nextMove.Value.rightMove ? Moves.MOVE_RIGHT : Moves.MOVE_LEFT;
+                            }
+
+                            else
+                            {
+                                currentAction = actionSelector.GetCurrentAction(rectangleInfo, nextMove.Value.movePoint.x, nextMove.Value.velocityX, nextMove.Value.rightMove);
+                            }
+                            #endregion
+                        }
+                        else
+                        {
+                            currentAction = actionSelector.GetCurrentAction(rectangleInfo, targetPointX_InAir, 0, true);
+                        }
+                    }
+                }
+
+                // rectangle is not on a platform
+                else
+                {
+                    if (nextMove.HasValue)
+                    {
+
+                        #region stairGapAction
+                        if (nextMove.Value.movementType == Platform.movementType.STAIR_GAP)
+                        {
+                            if (nextMove.Value.height < 55 && rectangleInfo.Height > 55)
+                            {
+                                currentAction = Moves.MORPH_DOWN;
+                            }
+
+                            else if (nextMove.Value.height > 190 && rectangleInfo.Height < 190)
+                            {
+                                currentAction = Moves.MORPH_UP;
+                            }
+
+                            else
+                            {
+                                currentAction = nextMove.Value.rightMove ? Moves.MOVE_RIGHT : Moves.MOVE_LEFT;
+                            }
+                        }
+                        #endregion
+                        
+                        else if (nextMove.Value.movementType == Platform.movementType.MORPH_DOWN && rectangleInfo.Height > nextMove.Value.height - LevelArray.PIXEL_LENGTH)
+                        {
+                            currentAction = Moves.MORPH_DOWN;
+                        }
+
+                        else if (nextMove.Value.movementType == Platform.movementType.MORPH_DOWN && rectangleInfo.Height <= nextMove.Value.height - LevelArray.PIXEL_LENGTH)
+                        {
+                            currentAction = nextMove.Value.rightMove ? Moves.MOVE_RIGHT : Moves.MOVE_LEFT;
+                        }
+
+                        else
+                        {
+                            if (nextMove.Value.collideCeiling && rectangleInfo.VelocityY < 0)
+                            {
+                                currentAction = Moves.NO_ACTION;
+                            }
+                            else
+                            {
+                                //currentAction = actionSelector.GetCurrentAction(rectangleInfo, targetPointX_InAir, 0, true);
+                                currentAction = actionSelector.GetCurrentAction(rectangleInfo, nextMove.Value.movePoint.x, nextMove.Value.velocityX, nextMove.Value.rightMove);
+                            }
+                        }
+                    }
+                }
+
+                if (!nextMove.HasValue)
+                {
+                    currentAction = actionSelector.GetCurrentAction(rectangleInfo, (int)rectangleInfo.X, 0, false);
+                }
+
+                lastMoveTime = DateTime.Now;
+                //DebugSensorsInfo();
+            }
+
+            if (nextMove.HasValue)
+            {
+                if (!actionSelector.IsGoal(rectangleInfo, nextMove.Value.movePoint.x, nextMove.Value.velocityX, nextMove.Value.rightMove))
+                {
+                    return;
+                }
+
+                if (-GameInfo.MAX_VELOCITY_Y <= rectangleInfo.VelocityY && rectangleInfo.VelocityY <= GameInfo.MAX_VELOCITY_Y)
+                {
+                    targetPointX_InAir = (nextMove.Value.reachablePlatform.leftEdge + nextMove.Value.reachablePlatform.rightEdge) / 2;
+
+                    //if (nextEdge.Value.movementType == Platform.movementType.NO_ACTION && rectangleInfo.Height < nextEdge.Value.height)
+                    if (nextMove.Value.movementType == Platform.movementType.NO_ACTION)
+                    {
+                        if (rectangleInfo.Height < nextMove.Value.height)
+                        {
+                            currentAction = Moves.MORPH_UP;
+                        }
+                        else if (rectangleInfo.Height > nextMove.Value.height)
+                        {
+                            currentAction = Moves.MORPH_DOWN;
+                        }
+
+                    }
+
+                    if (nextMove.Value.movementType == Platform.movementType.FALL && nextMove.Value.velocityX == 0 && rectangleInfo.Height < 190)
+                    {
+                        currentAction = Moves.MORPH_UP;
+                    }
+                }
+            }
+
+            /*
             if (lastMoveTime == 60)
                 lastMoveTime = 0;
 
@@ -181,6 +358,7 @@ namespace GeometryFriendsAgents
                 else
                     lastMoveTime = 60;
             }
+            */
         }
 
         //typically used console debugging used in previous implementations of GeometryFriends
@@ -211,6 +389,43 @@ namespace GeometryFriendsAgents
             {
                 Log.LogInformation("Rectangle Aagent - " + i.ToString());
             }
+        }
+
+        private void IsGetCollectible()
+        {
+            if (previousCollectibleNum != currentCollectibleNum)
+            {
+                getCollectibleFlag = true;
+            }
+
+            previousCollectibleNum = currentCollectibleNum;
+        }
+
+        private void IsDifferentPlatform()
+        {
+            currentPlatform = platform.GetPlatform_onRectangle(new LevelArray.Point((int)rectangleInfo.X, (int)rectangleInfo.Y), rectangleInfo.Height);
+
+            if (currentPlatform.HasValue)
+            {
+                if (!previousPlatform.HasValue)
+                {
+                    differentPlatformFlag = true;
+                }
+                else if (currentPlatform.Value.id != previousPlatform.Value.id)
+                {
+                    differentPlatformFlag = true;
+                }
+            }
+
+            previousPlatform = currentPlatform;
+        }
+
+        private void SetNextMove()
+        {
+            nextMove = null;
+            nextMove = subgoalAStar.CalculateShortestPath(currentPlatform.Value, new LevelArray.Point((int)rectangleInfo.X, (int)rectangleInfo.Y),
+                Enumerable.Repeat<bool>(true, levelArray.initialCollectiblesInfo.Length).ToArray(),
+                levelArray.GetObtainedCollectibles(collectiblesInfo), levelArray.initialCollectiblesInfo);
         }
 
         //implements abstract rectangle interface: signals the agent the end of the current level
