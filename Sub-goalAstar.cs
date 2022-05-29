@@ -92,6 +92,7 @@ namespace GeometryFriendsAgents
             }
 
             sw.Stop();
+            //en caso de que no encuentre un camino que pase por todos los coleccionables hace una nueva busqueda de camino, pero con los que se marcaron como "alcanzables".
             return CalculateShortestPath(currentPlatform, currentPoint, reachableCollectibles, obtainedCollectibles, initialCollectibles);
         }
 

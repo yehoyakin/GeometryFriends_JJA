@@ -171,14 +171,14 @@ namespace GeometryFriendsAgents
 
             if (!ascent)
             {
-                if (levelArray[lowestY, centerArray.xArray] == LevelArray.OBSTACLE)
+                if (levelArray[lowestY, centerArray.xArrayPoint] == LevelArray.OBSTACLE)
                 {
                     return collideType.FLOOR;
                 }
             }
             else
             {
-                if (levelArray[highestY, centerArray.xArray] == LevelArray.OBSTACLE)
+                if (levelArray[highestY, centerArray.xArrayPoint] == LevelArray.OBSTACLE)
                 {
                     return collideType.CEILING;
                 }
@@ -196,7 +196,7 @@ namespace GeometryFriendsAgents
 
             foreach (LevelArray.ArrayPoint i in checkPixels)
             {
-                if (levelArray[i.yArray, i.xArray] == LevelArray.OBSTACLE)
+                if (levelArray[i.yArrayPoint, i.xArrayPoint] == LevelArray.OBSTACLE)
                 {
                     return true;
                 }
@@ -211,9 +211,9 @@ namespace GeometryFriendsAgents
 
             foreach (LevelArray.ArrayPoint i in checkPixels)
             {
-                if (!(levelArray[i.yArray, i.xArray] == LevelArray.OBSTACLE || levelArray[i.yArray, i.xArray] == LevelArray.OPEN))
+                if (!(levelArray[i.yArrayPoint, i.xArrayPoint] == LevelArray.OBSTACLE || levelArray[i.yArrayPoint, i.xArrayPoint] == LevelArray.OPEN))
                 {
-                    collectible_onPath[levelArray[i.yArray, i.xArray] - 1] = true;
+                    collectible_onPath[levelArray[i.yArrayPoint, i.xArrayPoint] - 1] = true;
                 }
             }
 
@@ -456,11 +456,11 @@ namespace GeometryFriendsAgents
             {
                 float circleWidth;
 
-                if (i < circleCenterArray.yArray)
+                if (i < circleCenterArray.yArrayPoint)
                 {
                     circleWidth = (float)Math.Sqrt(Math.Pow(radius, 2) - Math.Pow(LevelArray.ConvertValue_ArrayPointIntoPoint(i + 1) - circleCenter.y, 2));
                 }
-                else if (i > circleCenterArray.yArray)
+                else if (i > circleCenterArray.yArrayPoint)
                 {
                     circleWidth = (float)Math.Sqrt(Math.Pow(radius, 2) - Math.Pow(LevelArray.ConvertValue_ArrayPointIntoPoint(i) - circleCenter.y, 2));
                 }

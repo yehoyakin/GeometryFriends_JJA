@@ -6,6 +6,7 @@ using GeometryFriends.AI.Perceptions.Information;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GeometryFriendsAgents
@@ -22,6 +23,7 @@ namespace GeometryFriendsAgents
         private Platform.MoveInfo? nextMove;
         private Platform.PlatformInfo? currentPlatform;
         private Platform.PlatformInfo? previousPlatform;
+        private ActionSelector actionSelector;
 
         // atributos añadidos a nuestro agente
         private int currentCollectibleNum;
@@ -34,6 +36,8 @@ namespace GeometryFriendsAgents
         //agent implementation specificiation
         private bool implementedAgent;
         private string agentName = "JJA";
+
+
 
         //auxiliary variables for agent action
         private Moves currentAction;
@@ -172,12 +176,16 @@ namespace GeometryFriendsAgents
             if ((lastMoveTime) <= (DateTime.Now.Second) && (lastMoveTime < 60))
                 //(DateTime.Now - lastMoveTime).TotalMilliseconds >= 20)
             {
+
+                //Acá se asigna la plataforma actual "currentPlataform" y la flag "differentPlatformFlag" de que si cambio o no de plataforma.
                 IsDifferentPlatform();
+                //se asigna una flag "getCollectibleFlag" para ver si se recolecto un diamante.
                 IsGetCollectible();
 
                 // rectangle on a platform
                 if (currentPlatform.HasValue)
                 {
+                    //esntra acá cuando termina su movimiento actual.
                     if (differentPlatformFlag || getCollectibleFlag)
                     {
                         differentPlatformFlag = false;
@@ -185,11 +193,13 @@ namespace GeometryFriendsAgents
 
                         targetPointX_InAir = (currentPlatform.Value.leftEdge + currentPlatform.Value.rightEdge) / 2;
 
+                        //Acá se asigna la variable "nextMove" usando A*.
                         Task.Factory.StartNew(SetNextMove);
                     }
                     // movimiento asignado al punto del grafo
                     if (nextMove.HasValue)
                     {
+                        //entra acá cuando esta dentro del limite de velocidad en Y
                         if (-GameInfo.MAX_VELOCITY_Y <= rectangleInfo.VelocityY && rectangleInfo.VelocityY <= GameInfo.MAX_VELOCITY_Y)
                         {
                             #region stairGapAction
@@ -298,7 +308,7 @@ namespace GeometryFriendsAgents
                     currentAction = actionSelector.GetCurrentAction(rectangleInfo, (int)rectangleInfo.X, 0, false);
                 }
 
-                lastMoveTime = DateTime.Now;
+                lastMoveTime = DateTime.Now.Second;
                 //DebugSensorsInfo();
             }
 
@@ -401,6 +411,7 @@ namespace GeometryFriendsAgents
             previousCollectibleNum = currentCollectibleNum;
         }
 
+
         private void IsDifferentPlatform()
         {
             currentPlatform = platform.GetPlatform_onRectangle(new LevelArray.Point((int)rectangleInfo.X, (int)rectangleInfo.Y), rectangleInfo.Height);
@@ -420,10 +431,14 @@ namespace GeometryFriendsAgents
             previousPlatform = currentPlatform;
         }
 
+        /// <summary>
+        /// Usa el algoritmo subgoal A* para asignar la variable nextMove
+        /// </summary>
         private void SetNextMove()
         {
+
             nextMove = null;
-            nextMove = subgoalAStar.CalculateShortestPath(currentPlatform.Value, new LevelArray.Point((int)rectangleInfo.X, (int)rectangleInfo.Y),
+            nextMove = subgoalAstar.CalculateShortestPath(currentPlatform.Value, new LevelArray.Point((int)rectangleInfo.X, (int)rectangleInfo.Y),
                 Enumerable.Repeat<bool>(true, levelArray.initialCollectiblesInfo.Length).ToArray(),
                 levelArray.GetObtainedCollectibles(collectiblesInfo), levelArray.initialCollectiblesInfo);
         }
