@@ -10,3 +10,9 @@ D:\Documentos\GitHub\GeometryFriends_JJA\obj\Debug\GeometryFriendsAgents.dll
 D:\Documentos\GitHub\GeometryFriends_JJA\obj\Debug\GeometryFriendsAgents.pdb
 D:\Documentos\GitHub\GeometryFriends_JJA\GeometryFriendsGame\Release\Agents\GeometryFriendsAgents.dll
 D:\Documentos\GitHub\GeometryFriends_JJA\GeometryFriendsGame\Release\Agents\GeometryFriendsAgents.pdb
+D:\joaqu\2022-1\IA\Competencia\Codigo\GeometryFriends_JJA\GeometryFriendsGame\Release\Agents\GeometryFriendsAgents.dll
+D:\joaqu\2022-1\IA\Competencia\Codigo\GeometryFriends_JJA\GeometryFriendsGame\Release\Agents\GeometryFriendsAgents.pdb
+D:\joaqu\2022-1\IA\Competencia\Codigo\GeometryFriends_JJA\obj\Debug\GeometryFriendsAgents.csproj.AssemblyReference.cache
+D:\joaqu\2022-1\IA\Competencia\Codigo\GeometryFriends_JJA\obj\Debug\GeometryFriendsAgents.csproj.CoreCompileInputs.cache
+D:\joaqu\2022-1\IA\Competencia\Codigo\GeometryFriends_JJA\obj\Debug\GeometryFriendsAgents.dll
+D:\joaqu\2022-1\IA\Competencia\Codigo\GeometryFriends_JJA\obj\Debug\GeometryFriendsAgents.pdb

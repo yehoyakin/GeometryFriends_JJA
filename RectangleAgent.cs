@@ -67,6 +67,7 @@ namespace GeometryFriendsAgents
             subgoalAstar = new SubgoalAStar();
             levelArray = new LevelArray();
             platform = new PlatformRectangle();
+            actionSelector = new ActionSelector();
 
             previousPlatform = null;
             currentPlatform = null;
