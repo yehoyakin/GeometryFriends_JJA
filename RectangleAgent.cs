@@ -201,8 +201,10 @@ namespace GeometryFriendsAgents
                     if (nextMove.HasValue)
                     {
                         //entra acá cuando esta dentro del limite de velocidad en Y
+                        //¿¿¿Porque revisa la velocidad en Y si esta arriba de una plataforma????
                         if (-GameInfo.MAX_VELOCITY_Y <= rectangleInfo.VelocityY && rectangleInfo.VelocityY <= GameInfo.MAX_VELOCITY_Y)
                         {
+                            
                             #region stairGapAction
                             if (nextMove.Value.movementType == Platform.movementType.STAIR_GAP)
                             {
@@ -222,7 +224,7 @@ namespace GeometryFriendsAgents
                                 }
                             }
                             #endregion
-
+                            //accion 
                             #region ActionByPlatformMoveType
 
                             else if (nextMove.Value.movementType == Platform.movementType.MORPH_DOWN && rectangleInfo.Height > nextMove.Value.height - LevelArray.PIXEL_LENGTH)
@@ -283,7 +285,7 @@ namespace GeometryFriendsAgents
                         {
                             currentAction = Moves.MORPH_DOWN;
                         }
-
+                        //cuando esta chiquito
                         else if (nextMove.Value.movementType == Platform.movementType.MORPH_DOWN && rectangleInfo.Height <= nextMove.Value.height - LevelArray.PIXEL_LENGTH)
                         {
                             currentAction = nextMove.Value.rightMove ? Moves.MOVE_RIGHT : Moves.MOVE_LEFT;
@@ -304,6 +306,7 @@ namespace GeometryFriendsAgents
                     }
                 }
 
+                //se queda quieto si no hay nada que hacer.
                 if (!nextMove.HasValue)
                 {
                     currentAction = actionSelector.GetCurrentAction(rectangleInfo, (int)rectangleInfo.X, 0, false);
@@ -315,6 +318,7 @@ namespace GeometryFriendsAgents
 
             if (nextMove.HasValue)
             {
+                
                 if (!actionSelector.IsGoal(rectangleInfo, nextMove.Value.movePoint.x, nextMove.Value.velocityX, nextMove.Value.rightMove))
                 {
                     return;

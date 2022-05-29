@@ -94,7 +94,9 @@ namespace GeometryFriendsAgents
                     for (int i = 0; i < row; i++)
                     {
                         var line = sr.ReadLine();
-                        var values = line.Split(',');
+
+                        
+                        string[] values = line.Split(',');
 
                         int j = 0;
                         foreach (var value in values)

@@ -24,14 +24,18 @@ namespace GeometryFriendsAgents
         private const int NUM_ROW_QMAP = NUM_STATE;
         private const int NUM_COLUMN_QMAP = NUM_POSSIBLE_MOVES * NUM_TARGET_VELOCITYX;
 
+        /// <summary>
+        /// "Qmap[filas,columnas]"El numero de filas es son el numero de estados. En esto el numero de columnas son todas las posibles velocidades * los dos posibles movimientos
+        /// </summary>
         private float[,] Qmap;
 
         public ActionSelector()
         {
             Qmap = Utilities.ReadCsvFile(NUM_ROW_QMAP, NUM_COLUMN_QMAP, "Agents\\Qmap.csv");
+            
         }
 
-
+        //
         public bool IsGoal(RectangleRepresentation rectangleRepresentation, int targetPointX, int targetVelocityX, bool rightMove)
         {
             float distanceX = rightMove ? rectangleRepresentation.X - targetPointX : targetPointX - rectangleRepresentation.X;
@@ -59,9 +63,12 @@ namespace GeometryFriendsAgents
             return false;
         }
 
-
+        /// <summary>
+        /// Esta función lo que hace es retornar si debe moverse a la izq o derecha tomando en cuenta la posicion del agente y su velocidad y la posicion y velocidad que deseea obtener.  
+        /// </summary>
         public Moves GetCurrentAction(RectangleRepresentation rectangleRepresentation, int targetPointX, int targetVelocityX, bool rightMove)
         {
+            
             //obtiene el estado del agente según su velocidad y la distancia que tiene a su objetivo.
             int stateNum = GetStateNum(rectangleRepresentation, targetPointX, rightMove);
 
@@ -69,6 +76,7 @@ namespace GeometryFriendsAgents
 
             float distanceX = rightMove ? rectangleRepresentation.X - targetPointX : targetPointX - rectangleRepresentation.X;
 
+            //acá se consideran los casos en los que hay mucha o muy poca distancia.
             if (distanceX <= -MAX_DISTANCEX)
             {
                 currentActionNum = ACCELERATE;
@@ -79,6 +87,10 @@ namespace GeometryFriendsAgents
             }
             else
             {
+                //JESUUUUS!!!!!
+                //Aca se considera la velocidad objetivo
+                //Este numero sirve para ver si el agente debe acelerar o frenar.
+                //dependiendo del estado actual y de la velocidad que quiere alcanzar.
                 currentActionNum = GetOptimalActionNum(stateNum, targetVelocityX);
             }
 
@@ -126,16 +138,21 @@ namespace GeometryFriendsAgents
             return discretizedVelocityX + discretizedDistanceX * (GameInfo.MAX_VELOCITY_X * 2 / DISCRETIZATION_VELOCITYX);
         }
 
+        /// <summary>
+        /// El numero que esto devuelve es??¡¡¡¡¡¡¡
+        /// </summary>
         private int GetOptimalActionNum(int stateNum, int targetVelocityX)
         {
             int maxColumnNum = 0;
             float maxValue = float.MinValue;
 
+            //matematicas lol
             int from = (targetVelocityX / (DISCRETIZATION_VELOCITYX * 2)) * 2;
             int to = from + NUM_POSSIBLE_MOVES;
 
             for (int i = from; i < to; i++)
             {
+
                 if (maxValue < Qmap[stateNum, i])
                 {
                     maxValue = Qmap[stateNum, i];
