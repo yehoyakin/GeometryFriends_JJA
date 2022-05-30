@@ -117,6 +117,8 @@ namespace GeometryFriendsAgents
             this.area = area;
 
             // primero se crea el array del nivel
+
+
             levelArray.CreateLevelArray(collectiblesInfo, obstaclesInfo, rectanglePlatformsInfo);
             platform.SetUp(levelArray.GetLevelArray(), levelArray.initialCollectiblesInfo.Length);
 
@@ -174,6 +176,7 @@ namespace GeometryFriendsAgents
         //implements abstract rectangle interface: updates the agent state logic and predictions
         public override void Update(TimeSpan elapsedGameTime)
         {
+
             if ((lastMoveTime) <= (DateTime.Now.Second) && (lastMoveTime < 60))
                 //(DateTime.Now - lastMoveTime).TotalMilliseconds >= 20)
             {
@@ -196,6 +199,7 @@ namespace GeometryFriendsAgents
 
                         //Acá se asigna la variable "nextMove" usando A*.
                         Task.Factory.StartNew(SetNextMove);
+                        //SetNextMove();
                     }
                     // movimiento asignado al punto del grafo
                     if (nextMove.HasValue)
@@ -253,6 +257,7 @@ namespace GeometryFriendsAgents
                             currentAction = actionSelector.GetCurrentAction(rectangleInfo, targetPointX_InAir, 0, true);
                         }
                     }
+
                 }
 
                 // rectangle is not on a platform

@@ -63,13 +63,17 @@ namespace GeometryFriendsAgents
                 {
                     sw.Stop();
                     // busca un path sin tomar en cuenta los collecionables ubicados más abajos con DeleteLowestCollectiables
-                    return CalculateShortestPath(currentPlatform, currentPoint, DeleteLowestCollectibles(goalCollectibles, initialCollectibles), obtainedCollectibles, initialCollectibles);
+                    return CalculateShortestPath(currentPlatform, currentPoint, DeleteFarthestCollectibles(currentPoint, goalCollectibles, initialCollectibles), obtainedCollectibles, initialCollectibles);
+                    //return CalculateShortestPath(currentPlatform, currentPoint, DeleteHighestCollectibles(goalCollectibles, initialCollectibles), obtainedCollectibles, initialCollectibles);
                 }
 
                 minCostState = GetMinCostState(openList);
 
-                openList.Add(minCostState);
-                closedList.Remove(minCostState);
+                openList.Remove(minCostState);
+                closedList.Add(minCostState);
+
+                //openList.Add(minCostState);
+                //closedList.Remove(minCostState);
 
                 if (IsGoalState(minCostState, goalCollectibles))
                 {
@@ -252,12 +256,12 @@ namespace GeometryFriendsAgents
             return false;
         }
 
-        public bool[] DeleteLowestCollectibles(bool[] goalCollectibles, CollectibleRepresentation[] initialCollectibles)
+        public bool[] DeleteHighestCollectibles(bool[] goalCollectibles, CollectibleRepresentation[] initialCollectibles)
         {
             // mejorable -> Otra metrica
             // buscar el colleccionable más lejano en vez del que esté más abajo.
-            float lowestHeight = float.MinValue;
-            int lowestCollectibleID = 0;
+            float biggestHeight = float.MinValue;
+            int higherCollectibleID = 0;
             bool[] deletedCollectibles = new bool[goalCollectibles.Length];
             goalCollectibles.CopyTo(deletedCollectibles, 0);
 
@@ -265,15 +269,40 @@ namespace GeometryFriendsAgents
             {
                 if (goalCollectibles[i])
                 {
-                    if (lowestHeight < initialCollectibles[i].Y)
+                    if (biggestHeight < initialCollectibles[i].Y)
                     {
-                        lowestHeight = initialCollectibles[i].Y;
-                        lowestCollectibleID = i;
+                        biggestHeight = initialCollectibles[i].Y;
+                        higherCollectibleID = i;
                     }
                 }
             }
 
-            deletedCollectibles[lowestCollectibleID] = false;
+            deletedCollectibles[higherCollectibleID] = false;
+
+            return deletedCollectibles;
+        }
+
+        public bool[] DeleteFarthestCollectibles(LevelArray.Point currentPoint, bool[] goalCollectibles, CollectibleRepresentation[] initialCollectibles)
+        {
+            float bigestDist = float.MinValue;
+            int bigestDistCollectibleID = 0;
+            bool[] deletedCollectibles = new bool[goalCollectibles.Length];
+            goalCollectibles.CopyTo(deletedCollectibles, 0);
+
+            for (int i = 0; i < goalCollectibles.Length; i++)
+            {
+                if (goalCollectibles[i])
+                {
+                    var dist = CalculateDistance(currentPoint, new LevelArray.Point((int)initialCollectibles[i].X, (int)initialCollectibles[i].Y));
+                    if (bigestDist < dist)
+                    {
+                        bigestDist = dist;
+                        bigestDistCollectibleID = i;
+                    }
+                }
+            }
+
+            deletedCollectibles[bigestDistCollectibleID] = false;
 
             return deletedCollectibles;
         }

@@ -68,7 +68,6 @@ namespace GeometryFriendsAgents
         /// </summary>
         public Moves GetCurrentAction(RectangleRepresentation rectangleRepresentation, int targetPointX, int targetVelocityX, bool rightMove)
         {
-            
             //obtiene el estado del agente según su velocidad y la distancia que tiene a su objetivo.
             int stateNum = GetStateNum(rectangleRepresentation, targetPointX, rightMove);
 
@@ -87,6 +86,8 @@ namespace GeometryFriendsAgents
             }
             else
             {
+                //currentActionNum = ACCELERATE;
+
                 //JESUUUUS!!!!!
                 //Aca se considera la velocidad objetivo
                 //Este numero sirve para ver si el agente debe acelerar o frenar.

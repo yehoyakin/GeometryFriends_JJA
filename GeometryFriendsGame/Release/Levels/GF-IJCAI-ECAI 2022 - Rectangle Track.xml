@@ -60,6 +60,10 @@
     <GreenElevators />
     <OrangeElevators />
     <TimeLimit value="120" />
+    <HighScores>
+      <HighScore name="JJA" value="11" />
+      <HighScore name="JJA" value="11" />
+    </HighScores>
   </Level3>
   <Level4>
     <Description />
