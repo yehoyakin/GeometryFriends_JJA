@@ -18,6 +18,11 @@
     <GreenElevators />
     <OrangeElevators />
     <TimeLimit value="120" />
+    <HighScores>
+      <HighScore name="JJA" value="10" />
+      <HighScore name="JJA" value="10" />
+      <HighScore name="JJA" value="11" />
+    </HighScores>
   </Level1>
   <Level2>
     <Description />
@@ -61,8 +66,10 @@
     <OrangeElevators />
     <TimeLimit value="120" />
     <HighScores>
+      <HighScore name="JJA" value="10" />
       <HighScore name="JJA" value="11" />
       <HighScore name="JJA" value="11" />
+      <HighScore name="JJA" value="12" />
     </HighScores>
   </Level3>
   <Level4>

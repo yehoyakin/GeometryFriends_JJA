@@ -61,6 +61,9 @@ namespace GeometryFriendsAgents
         //Area of the game screen
         protected Rectangle area;
 
+
+        private Platform.movementType prevMove; 
+
         public RectangleAgent()
         {
             //Instancias
@@ -106,6 +109,8 @@ namespace GeometryFriendsAgents
         /// <param name="timeLimit">tiempo límite del nivel</param>
         public override void Setup(CountInformation nI, RectangleRepresentation rI, CircleRepresentation cI, ObstacleRepresentation[] oI, ObstacleRepresentation[] rPI, ObstacleRepresentation[] cPI, CollectibleRepresentation[] colI, Rectangle area, double timeLimit)
         {
+            currentCollectibleNum = nI.CollectiblesCount;
+
             numbersInfo = nI;
             nCollectiblesLeft = nI.CollectiblesCount;
             rectangleInfo = rI;
@@ -118,6 +123,7 @@ namespace GeometryFriendsAgents
 
             // primero se crea el array del nivel
 
+            nextMove = null;
 
             levelArray.CreateLevelArray(collectiblesInfo, obstaclesInfo, rectanglePlatformsInfo);
             platform.SetUp(levelArray.GetLevelArray(), levelArray.initialCollectiblesInfo.Length);
@@ -131,6 +137,9 @@ namespace GeometryFriendsAgents
         //implements abstract rectangle interface: registers updates from the agent's sensors that it is up to date with the latest environment information
         public override void SensorsUpdated(int nC, RectangleRepresentation rI, CircleRepresentation cI, CollectibleRepresentation[] colI)
         {
+            currentCollectibleNum = nC;
+
+
             nCollectiblesLeft = nC;
 
             rectangleInfo = rI;
@@ -192,18 +201,28 @@ namespace GeometryFriendsAgents
                     //esntra acá cuando termina su movimiento actual.
                     if (differentPlatformFlag || getCollectibleFlag)
                     {
+
                         differentPlatformFlag = false;
                         getCollectibleFlag = false;
 
                         targetPointX_InAir = (currentPlatform.Value.leftEdge + currentPlatform.Value.rightEdge) / 2;
 
+
+
                         //Acá se asigna la variable "nextMove" usando A*.
-                        Task.Factory.StartNew(SetNextMove);
-                        //SetNextMove();
+                        //Task.Factory.StartNew(SetNextMove);
+                        SetNextMove();
                     }
                     // movimiento asignado al punto del grafo
                     if (nextMove.HasValue)
                     {
+                        if (prevMove != nextMove.Value.movementType)
+                        {
+                            Console.WriteLine($"{nextMove.Value.movementType}");
+                        }
+                        prevMove = nextMove.Value.movementType;
+    
+
                         //entra acá cuando esta dentro del limite de velocidad en Y
                         //¿¿¿Porque revisa la velocidad en Y si esta arriba de una plataforma????
                         if (-GameInfo.MAX_VELOCITY_Y <= rectangleInfo.VelocityY && rectangleInfo.VelocityY <= GameInfo.MAX_VELOCITY_Y)
@@ -263,6 +282,8 @@ namespace GeometryFriendsAgents
                 // rectangle is not on a platform
                 else
                 {
+
+
                     if (nextMove.HasValue)
                     {
 
